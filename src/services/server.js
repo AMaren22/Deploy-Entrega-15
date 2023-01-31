@@ -3,7 +3,6 @@ import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import { sqLiteDb } from "../classes/sqLiteDb.js";
-import { mySqlDb } from "../classes/mySqlDb.js";
 import mainRouter from "../routes/main.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
@@ -13,6 +12,7 @@ import { config } from "../config/global.js";
 import { loginFunc, signUpFunc } from "./auth.js";
 import passport from "passport";
 import { sessionExist } from "../utils/session.js";
+import { ProductsModel } from "../models/product.model.js";
 const app = express();
 const server = http.Server(app);
 
@@ -66,11 +66,8 @@ app.get("/login", (req, res) => {
 });
 app.get("/formulario", validateLogIn, async (req, res, next) => {
   try {
-    //  Estas dos funciones se utilizan solo la primera vez, para crear las tablas
-    //  await sqLiteDb.createTables()
-    //  await mySqlDb.createTables()
     const name = req.user.email;
-    const dataJson = await mySqlDb.getAll();
+    const dataJson = await ProductsModel.find();
     const messageJson = await sqLiteDb.getAll();
     res.render("formulario", { dataJson, messageJson, name });
   } catch (error) {

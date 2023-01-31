@@ -1,7 +1,7 @@
 import moment from "moment";
 import { Server } from "socket.io";
-import { mySqlDb } from "../classes/mySqlDb.js";
 import { sqLiteDb } from "../classes/sqLiteDb.js";
+import { ProductsModel } from "../models/product.model.js";
 
 const initWsServer = (server) => {
   const io = new Server(server);
@@ -16,7 +16,7 @@ const initWsServer = (server) => {
           price: product.price,
           thumbnail: product.thumbnail,
         };
-        await mySqlDb.insertData(newProduct);
+        await ProductsModel.create(newProduct);
         io.emit("addTable", newProduct);
       } catch (error) {
         console.log(error);
